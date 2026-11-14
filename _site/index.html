@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="description"
+    content="BL Monitor and Control's controls and electronics work for Fermilab's NNSA Compact Accelerator Project."
+  >
+
+  <title>NNSA Compact Accelerator | BL Monitor and Control</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #07111d;
+      --surface: #102132;
+      --surface-light: #152b40;
+      --text: #eff6fb;
+      --muted: #b8cad8;
+      --accent: #62dbe8;
+      --border: #29465a;
+      --width: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font: 16px/1.6 system-ui, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", sans-serif;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .container {
+      width: min(calc(100% - 2.5rem), var(--width));
+      margin-inline: auto;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -5rem;
+      left: 1rem;
+      z-index: 10;
+      padding: 0.6rem 1rem;
+      background: #fff;
+      color: #07111d;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    header {
+      background: #091827;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem 2rem;
+      flex-wrap: wrap;
+      padding-block: 0.8rem;
+    }
+
+    .brand {
+      color: var(--text);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem 1.4rem;
+    }
+
+    nav a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      padding: clamp(4.5rem, 10vw, 8rem) 0;
+      background:
+        radial-gradient(circle at 85% 20%, #19465c 0, transparent 38%),
+        linear-gradient(135deg, #0c2032, #07111d 72%);
+    }
+
+    .eyebrow {
+      margin: 0 0 1rem;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0 0 1.25rem;
+      font-size: clamp(2.6rem, 6vw, 4.6rem);
+    }
+
+    h2 {
+      margin: 0 0 1rem;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+    }
+
+    h3 {
+      margin: 0 0 0.7rem;
+      font-size: 1.2rem;
+    }
+
+    p {
+      margin: 0 0 1rem;
+    }
+
+    .lead {
+      max-width: 760px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 2rem;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.8rem 1.2rem;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent);
+      color: #07111d;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      background: transparent;
+      border-color: #7794a8;
+      color: var(--text);
+    }
+
+    .button:hover {
+      filter: brightness(1.1);
+    }
+
+    section {
+      padding: 4.5rem 0;
+    }
+
+    .alternate {
+      background: #0b1a29;
+      border-block: 1px solid var(--border);
+    }
+
+    .intro {
+      max-width: 780px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .spec {
+      min-width: 170px;
+      padding: 1rem 1.25rem;
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+    }
+
+    .spec strong {
+      display: block;
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .spec span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .card p + p {
+      margin-top: 1rem;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .highlight {
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-light);
+    }
+
+    .highlight p:last-child {
+      margin-bottom: 0;
+    }
+
+    footer {
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top">
+        BL Monitor and Control <span>|</span> Accelerator Controls
+      </a>
+
+      <nav aria-label="Main navigation">
+        <a href="#project">The project</a>
+        <a href="#contribution">Our contribution</a>
+        <a href="#platform">Why Blinky-Lite&trade;</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#resources">Resources</a>
+        <a href="#contact">Contact</a>
+        <a href="https://app.bl-fermi-01.com">Control system</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero" id="top">
+      <div class="container">
+        <p class="eyebrow">
+          Controls and electronics · NNSA Compact Accelerator Project
+        </p>
+
+        <h1>Advanced accelerator technology. Purpose-built controls.</h1>
+
+        <p class="lead">
+          BL Monitor and Control develops control systems and electronics
+          for demanding scientific applications. As a subcontractor to
+          Fermilab, we support the NNSA Compact Accelerator Project with
+          the instrumentation, interfaces and controls needed to bring a
+          cutting-edge accelerator to life.
+        </p>
+
+        <div class="actions">
+          <a class="button" href="https://app.bl-fermi-01.com">
+            Enter the control system
+          </a>
+
+          <a class="button secondary" href="#contribution">
+            Explore our work
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <section id="project">
+      <div class="container">
+        <div class="intro">
+          <p class="eyebrow">The project</p>
+
+          <h2>Making powerful accelerators more practical</h2>
+
+          <p class="muted">
+            At Fermilab’s Illinois Accelerator Research Center (IARC),
+            the NNSA Compact Accelerator Project is developing a compact
+            superconducting radio-frequency electron accelerator for
+            potential industrial applications.
+          </p>
+
+          <p class="muted">
+            The project is a technology demonstrator intended to help
+            transfer compact accelerator technology to industry. Its
+            design combines superconducting acceleration with commercial
+            cryocoolers, aiming to deliver high beam power without a
+            conventional liquid-helium bath.
+          </p>
+
+          <p class="muted">
+            Potential applications include X-ray generation for
+            medical-device sterilization.
+          </p>
+        </div>
+
+        <div class="specs" aria-label="Accelerator design targets">
+          <div class="spec">
+            <strong>650 MHz</strong>
+            <span>RF frequency</span>
+          </div>
+
+          <div class="spec">
+            <strong>1.6 MeV</strong>
+            <span>Target beam energy</span>
+          </div>
+
+          <div class="spec">
+            <strong>20 kW</strong>
+            <span>Target beam power</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="alternate" id="contribution">
+      <div class="container">
+        <div class="intro">
+          <p class="eyebrow">Our contribution</p>
+
+          <h2>Connecting the equipment behind the accelerator</h2>
+
+          <p class="muted">
+            A compact accelerator brings together sensitive RF,
+            cryogenic, vacuum and instrumentation systems. Our work
+            focuses on the controls and electronics that help the team
+            monitor, test and coordinate these subsystems as the project
+            develops.
+          </p>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <h3>Hardware interfaces</h3>
+            <p>
+              Connect pumps, coolers, sensors and other equipment to a
+              common control environment.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Instrumentation</h3>
+            <p>
+              Acquire the temperatures, pressures, flows and status signals
+              needed to understand system behavior.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Low-level RF</h3>
+            <p>
+              Support precise control and monitoring of the
+              superconducting cavity’s RF system.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Machine protection</h3>
+            <p>
+              Monitor configured alarm conditions, coordinate protective
+              actions and record events for analysis.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Web-based controls</h3>
+            <p>
+              Bring operational information and subsystem interfaces
+              together in a web-based environment.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="platform">
+      <div class="container two-column">
+        <div>
+          <p class="eyebrow">Designed for the field</p>
+
+          <h2>From laboratory demonstration to industrial operation</h2>
+
+          <p class="muted">
+            The project’s goal of transferring accelerator technology to
+            industry changes the requirements for its control system.
+            An accelerator deployed in the field may not have a national
+            laboratory’s large on-site team of control engineers and
+            technical specialists.
+          </p>
+
+          <p class="muted">
+            Operators need a practical way to monitor equipment, respond
+            to issues and connect with experts when support is needed.
+          </p>
+
+          <p class="muted">
+            BL Monitor and Control’s Blinky-Lite&trade; platform was
+            selected for this application with those needs in mind. It
+            brings subsystem interfaces, instrumentation, alarms and
+            web-based monitoring together in a platform designed for
+            distributed equipment and secure remote access.
+          </p>
+
+          <p>
+            <a href="https://blinky-lite.org/">
+              Learn more about Blinky-Lite&trade; &rarr;
+            </a>
+          </p>
+        </div>
+
+        <aside class="highlight" aria-labelledby="platform-benefits">
+          <p class="eyebrow">Why Blinky-Lite&trade;</p>
+
+          <h3 id="platform-benefits">Built for equipment beyond the lab</h3>
+
+          <p>
+            <strong>Remote expertise.</strong> Secure remote access helps
+            qualified specialists monitor and troubleshoot equipment
+            without always being on site.
+          </p>
+
+          <p>
+            <strong>Event-driven communication.</strong>
+            Publish-subscribe messaging distributes updates as they occur,
+            supporting timely notification and coordination across
+            subsystems.
+          </p>
+
+          <p>
+            <strong>Intelligence close to the equipment.</strong> Edge
+            computing places control functions near the devices they serve.
+          </p>
+
+          <p>
+            <strong>A system that grows with the project.</strong> Modular
+            interfaces and software allow controls to be introduced during
+            component testing and expanded as the accelerator develops.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="alternate" id="capabilities">
+      <div class="container two-column">
+        <div>
+          <p class="eyebrow">Engineering capabilities</p>
+
+          <h2>From prototype electronics to integrated systems</h2>
+
+          <p class="muted">
+            Scientific equipment often combines specialized hardware with
+            components from multiple manufacturers. We bridge those
+            interfaces, developing electronics and software that help
+            engineers test components and build toward an integrated system.
+          </p>
+
+          <p class="muted">
+            Our work on this project spans hardware integration,
+            instrumentation, RF controls, automation and operational
+            interfaces—capabilities applicable to complex research and
+            industrial equipment.
+          </p>
+        </div>
+
+        <aside class="highlight" aria-labelledby="test-stand-title">
+          <p class="eyebrow">In development</p>
+
+          <h3 id="test-stand-title">A test stand for critical technologies</h3>
+
+          <p>
+            The project’s test stand brings together a superconducting
+            cavity, vacuum and cooling systems, instrumentation, RF
+            controls and machine protection.
+          </p>
+
+          <p class="muted">
+            It gives the team a way to evaluate components and their
+            integration during development.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="resources">
+      <div class="container">
+        <div class="intro">
+          <p class="eyebrow">Project resources</p>
+
+          <h2>Explore the technology</h2>
+
+          <p class="muted">
+            Learn more about compact superconducting accelerators and
+            their potential applications through these publications and
+            resources.
+          </p>
+        </div>
+
+        <div class="grid">
+          <article class="card">
+            <h3>Fermilab project overview</h3>
+            <p>
+              Researchers at Fermilab develop an electron beam accelerator
+              for medical-equipment sterilization.
+            </p>
+            <p>
+              <a href="https://news.fnal.gov/2024/03/researchers-at-fermilab-develop-electron-beam-accelerator-to-sterilize-medical-equipment/">
+                Read the Fermilab article &rarr;
+              </a>
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Compact superconducting accelerators</h3>
+            <p>
+              A Department of Energy overview of the potential impact of
+              compact superconducting radio-frequency accelerator technology.
+            </p>
+            <p>
+              <a href="https://www.energy.gov/science/articles/basic2breakthrough-making-impact-compact-superconducting-radiofrequency">
+                Read the DOE article &rarr;
+              </a>
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Technical paper</h3>
+            <p>
+              Motivation and development of a compact superconducting
+              accelerator for X-ray medical-device sterilization.
+            </p>
+            <p>
+              <a href="https://arxiv.org/pdf/2112.07553">
+                Read the paper (PDF) &rarr;
+              </a>
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Industrial applications</h3>
+            <p>
+              Fermilab IARC’s overview of accelerator technology for food
+              and medical-device sterilization.
+            </p>
+            <p>
+              <a href="https://iarc.fnal.gov/food-and-medical-device-sterilization/">
+                Explore sterilization applications &rarr;
+              </a>
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="alternate" id="contact">
+      <div class="container">
+        <p class="eyebrow">Work with us</p>
+
+        <h2>Building a challenging control system?</h2>
+
+        <p class="muted intro">
+          Let’s discuss your instrumentation, electronics or
+          control-system needs.
+        </p>
+
+        <div class="actions">
+          <a class="button" href="https://www.bl-mc.com/">
+            Visit BL Monitor and Control
+          </a>
+
+          <a class="button secondary" href="https://blinky-lite.org/">
+            Explore Blinky-Lite&trade;
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>
+        <strong>
+          <a href="https://www.bl-mc.com/">BL Monitor and Control</a>
+        </strong>
+        · Controls and electronics
+      </p>
+
+      <p>
+        BL Monitor and Control is an independent subcontractor providing
+        controls and electronics for this project. This is not an official
+        Fermilab or NNSA website.
+      </p>
+
+      <p>Accelerator specifications shown are design targets.</p>
+    </div>
+  </footer>
+</body>
+</html>
